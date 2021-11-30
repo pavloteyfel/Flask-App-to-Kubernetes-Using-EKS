@@ -2,11 +2,11 @@
 """
 A simple app to create a JWT token.
 """
-import os
-import logging
-import datetime
 import functools
+import datetime
+import logging
 import jwt
+import os
 
 # pylint: disable=import-error
 from flask import Flask, jsonify, request, abort
@@ -17,11 +17,11 @@ LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
 
 
 def _logger():
-    '''
+    """
     Setup logger format, level, and handler.
 
     RETURNS: log object
-    '''
+    """
     formatter = logging.Formatter(
         '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
