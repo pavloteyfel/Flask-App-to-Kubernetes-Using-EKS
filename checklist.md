@@ -103,13 +103,24 @@ env:
     JWT_SECRET: JWT_SECRET
 ```
 2. Put secret into AWS parameter store:
-``
+`aws ssm put-parameter --name JWT_SECRET --overwrite --value "YourJWTSecret" --type SecureString`
 
+3. Edit the buildspec.yml file if necessary, that is checked by CodeBuild
 
 ## Build and deploy
 Finally, you will trigger the manual build (on Codebuild web console) to deploy and run the app on the K8s cluster. Besides, any GitHub check-ins will also trigger the pipeline.
 
-
+### Execute
+1. "Start build" on the CodeBuild dashboard / or push something into github
+2. Your can check the status on CodeBuild and CodePipeline
+3. Access the application. For this you need the address: `kubectl get services simple-jwt-api -o wide`
+4. Add tests to the build, open buildspec.yml and this line:
+```yaml
+pre_build:
+  commands:
+    - pip3 install -r requirements.txt 
+    - python -m pytest test_main.py
+```
 
 
 # After project is over:
