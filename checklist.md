@@ -77,20 +77,34 @@ Next, you will generate an access-token from your Github account so that whichev
 
 ### Execution
 1. Prepare github access token
-2. Prepare CloudFormation template ci-cd-codepipeline.cfn.yml and edit it:
+
+
+## Create a pipeline using CloudFormation template
+Create a pipeline watching for commits to your Github repository. You will create the necessary AWS resources using a script, Cloudformation template (.yaml) file, available to you. These resources collectively are called stack. It will automatically create the Codebuild and Codepipeline projects for you.
+
+### Execution
+1. Prepare CloudFormation template ci-cd-codepipeline.cfn.yml and edit it:
 - EksClusterName	Default:    name of the EKS cluster you created
 - GitSourceRepo	Defaul:         github repo name
 - GitBranch	Default:	        master, or any other you want to link to the Pipeline
 - GitHubUser	Default:        your Github username
 - KubectlRoleName	Default:    we created this role earlier
-3. Upload the template in CoudFormation / Create stack / new resourse / Template is ready / Upload template
-4. Specify stack details
-
-## Create a pipeline using CloudFormation template
-Create a pipeline watching for commits to your Github repository. You will create the necessary AWS resources using a script, Cloudformation template (.yaml) file, available to you. These resources collectively are called stack. It will automatically create the Codebuild and Codepipeline projects for you.
+2. Upload the template in CoudFormation / Create stack / new resourse / Template is ready / Upload template
+3. Specify stack details, and create the stack
 
 ## Set a Secret using AWS Parameter Store
 In order to pass your JWT secret to the app in Kubernetes securely, you will set the JWT secret using AWS parameter store.
+
+### Execution
+1. Edit the buildspec.yml, add to the end of file:
+```yaml
+env:
+  parameter-store:         
+    JWT_SECRET: JWT_SECRET
+```
+2. Put secret into AWS parameter store:
+``
+
 
 ## Build and deploy
 Finally, you will trigger the manual build (on Codebuild web console) to deploy and run the app on the K8s cluster. Besides, any GitHub check-ins will also trigger the pipeline.
@@ -98,5 +112,6 @@ Finally, you will trigger the manual build (on Codebuild web console) to deploy 
 
 
 
-After project is over:
+# After project is over:
 `eksctl delete cluster simple-jwt-api  --region=us-east-2`
+`aws ssm delete-parameter --name JWT_SECRET`
